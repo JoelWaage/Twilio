@@ -13,19 +13,28 @@ namespace Twilio
         {
             var client = new RestClient("https://api.twilio.com/2010-04-01");
 
-            var request = new RestRequest("Accounts/ACa2c31d7210c8e998dec91c784b4e922e/Messages", Method.POST);
-
-            request.AddParameter("To", "+19417308602");
-            request.AddParameter("From", "+12067178858");
-            request.AddParameter("Body", "Islands in the Stream");
-
+            var request = new RestRequest("Accounts/ACa2c31d7210c8e998dec91c784b4e922e/Messages.json", Method.GET);
             client.Authenticator = new HttpBasicAuthenticator("ACa2c31d7210c8e998dec91c784b4e922e", "348a8cd48582b1a8289e1bc3db41cd08");
 
-            client.ExecuteAsync(request, response =>
+            var response = new RestResponse();
+
+            Task.Run(async () =>
             {
-                Console.WriteLine(response);
-            });
+                response = await GetResponseContentAsync(client, request) as RestResponse;
+            }).Wait();
+
+            Console.WriteLine(response.Content);
             Console.ReadLine();
+        }
+
+        public static Task<IRestResponse> GetResponseContentAsync(RestClient theClient, RestRequest theRequest)
+        {
+            var tcs = new TaskCompletionSource<IRestResponse>();
+            theClient.ExecuteAsync(theRequest, response =>
+            {
+                tcs.SetResult(response);
+            });
+            return tcs.Task;
         }
     }
 }
