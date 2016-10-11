@@ -9,6 +9,7 @@
       "type": "platform",
       "version": "1.0.1"
     },
+    "Newtonsoft.Json": "9.0.2-beta1",
     "RestSharp.NetCore": "105.2.4-rc4-24214-01"
   },
 
